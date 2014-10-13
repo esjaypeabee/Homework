@@ -76,24 +76,17 @@ def display_customer(customer):
 	print "Phone: ", customer.get('telephone')
 	print "\n"
 
-def update_call_list(customer, call_list):
+def update_call_list(customer, customer_row):
 
 	date = time.strftime("%x")
-	f = csv.reader(open(call_list))
-	customers = [l for l in r]
+
 	print "Were you able to reach ", customer.get('first'), '? (Y/N)'
 	answer = input('>> ').lower()
+	cid = customer.get('customer_id')
 	
-	while True:
-		if answer == 'y':
-			#update call list 
-			print "Customer database updated. Run again for the next customer."
-			break
-		elif answer == 'n':
-			print "Maybe next time. Run again for the next customer."
-			break
-		else:
-			print "Please type Y or N."
+	customer_row[-1] = date
+	
+	return customer_row
 
 
 def main():
@@ -101,14 +94,20 @@ def main():
 	customers = load_customers('customers.csv')
 	orders    = load_orders('orders.csv')
 
+	f = csv.reader(open(call_list))
+	customers = [row for row in f]
 	# Loop through each order
 	for order in orders:
 		# Is this order over 20 watermelon?
 		if order.get('num_watermelons', 0) > 20:
 			# Has this customer not been contacted yet?
 			customer = customers.get(order.get('customer_id', 0), 0)
+			
 			if customer.get('called', '') == '':
-				display_customer(customer)
+				updated_customer_row = display_customer(customer)
+				csvwriter.writerow(updated_customer_row)
+				print "Customer database updated. Run again for the next customer."
+
 				break
 
 if __name__ == '__main__':
