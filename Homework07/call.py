@@ -8,6 +8,8 @@ call.py - Telemarketing script that displays the next name
           an order of over 20 Watermelons.
 
 """
+import time
+import csv
 
 # Load the customers from the passed filename
 # Return a dictionary containing the customer data
@@ -73,6 +75,26 @@ def display_customer(customer):
 	print "Name: ", customer.get('first', ''), customer.get('last', '')
 	print "Phone: ", customer.get('telephone')
 	print "\n"
+
+def update_call_list(customer, call_list):
+
+	date = time.strftime("%x")
+	f = csv.reader(open(call_list))
+	customers = [l for l in r]
+	print "Were you able to reach ", customer.get('first'), '? (Y/N)'
+	answer = input('>> ').lower()
+	
+	while True:
+		if answer == 'y':
+			#update call list 
+			print "Customer database updated. Run again for the next customer."
+			break
+		elif answer == 'n':
+			print "Maybe next time. Run again for the next customer."
+			break
+		else:
+			print "Please type Y or N."
+
 
 def main():
 	# Load data from our csv files
